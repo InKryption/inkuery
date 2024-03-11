@@ -23,7 +23,7 @@ pub fn ProgressiveSliceMatch(comptime T: type) type {
             return pmc;
         }
 
-        /// clears the search query
+        /// Clears the search query.
         pub fn clear(pmc: *Self) void {
             pmc.* = .{ .candidates = pmc.candidates };
         }
@@ -62,7 +62,7 @@ pub fn ProgressiveSliceMatch(comptime T: type) type {
             return closest;
         }
 
-        /// asserts that `segment.len != 0`
+        /// Asserts that `segment.len != 0`.
         pub fn append(pmc: *Self, segment: []const T) bool {
             assert(segment.len != 0);
             if (pmc.current_index == pmc.candidates.len) return false;
@@ -83,6 +83,14 @@ pub fn ProgressiveSliceMatch(comptime T: type) type {
 
             pmc.current_index = pmc.candidates.len;
             return false;
+        }
+
+        /// Asserts that `segment.len != 0`.
+        /// Returns the result for if the caller was to `append` the
+        /// given `segment`, without actually appending it.
+        pub inline fn appendCheck(self: Self, segment: []const T) bool {
+            var copy = self;
+            return copy.append(segment);
         }
     };
 }
@@ -243,6 +251,14 @@ pub fn ProgressiveStringToEnum(comptime E: type) type {
 
             pse.current_index = sorted.tags.len;
             return false;
+        }
+
+        /// Asserts that `segment.len != 0`.
+        /// Returns the result for if the caller was to `append` the
+        /// given `segment`, without actually appending it.
+        pub inline fn appendCheck(self: Self, segment: []const u8) bool {
+            var copy = self;
+            return copy.append(segment);
         }
 
         const sorted = blk: {
