@@ -5,13 +5,13 @@ pub fn build(b: *Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const module = b.createModule(Build.CreateModuleOptions{
-        .source_file = Build.FileSource.relative("src/main.zig"),
+    const module = b.addModule("pss", .{
+        .root_source_file = Build.LazyPath.relative("src/main.zig"),
     });
-    b.addModule("index", module);
+    _ = module;
 
     const main_tests = b.addTest(.{
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = Build.LazyPath.relative("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });

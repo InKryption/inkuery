@@ -118,20 +118,20 @@ fn testProgressiveSliceMatch(comptime T: type, candidates: []const []const T) !v
     for (sorted) |candidate| {
         pmc.clear();
         try std.testing.expectEqualSlices(T, &.{}, try testing.expectNonNull(pmc.getMatchedSubstring()));
-        try testing.expectEqual(null, pmc.getClosestCandidate());
-        try testing.expectEqual(null, pmc.getMatch());
+        try std.testing.expectEqual(null, pmc.getClosestCandidate());
+        try std.testing.expectEqual(null, pmc.getMatch());
 
         try std.testing.expect(pmc.append(candidate));
         try std.testing.expectEqualSlices(T, candidate, try testing.expectNonNull(pmc.getMatchedSubstring()));
-        try testing.expectEqual(candidate, pmc.getClosestCandidate());
-        try testing.expectEqual(candidate, pmc.getMatch());
+        try std.testing.expectEqual(candidate, pmc.getClosestCandidate());
+        try std.testing.expectEqual(candidate, pmc.getMatch());
 
         pmc.clear();
         try std.testing.expect(pmc.append(pmc.candidates[pmc.candidates.len - 1]));
         try std.testing.expect(!pmc.append("-no-match"));
-        try testing.expectEqual(null, pmc.getMatchedSubstring());
-        try testing.expectEqual(null, pmc.getClosestCandidate());
-        try testing.expectEqual(null, pmc.getMatch());
+        try std.testing.expectEqual(null, pmc.getMatchedSubstring());
+        try std.testing.expectEqual(null, pmc.getClosestCandidate());
+        try std.testing.expectEqual(null, pmc.getMatch());
 
         for (1..candidate.len + 1) |max_seg_size| {
             pmc.clear();
@@ -142,8 +142,8 @@ fn testProgressiveSliceMatch(comptime T: type, candidates: []const []const T) !v
                 try std.testing.expect(pmc.getClosestCandidate() != null);
             }
             try std.testing.expectEqualSlices(T, candidate, try testing.expectNonNull(pmc.getMatchedSubstring()));
-            try testing.expectEqual(candidate, pmc.getClosestCandidate());
-            try testing.expectEqual(candidate, pmc.getMatch());
+            try std.testing.expectEqual(candidate, pmc.getClosestCandidate());
+            try std.testing.expectEqual(candidate, pmc.getMatch());
         }
     }
 }
@@ -157,8 +157,8 @@ test progressiveSliceMatch {
         "foo",
     });
 
-    try testing.expectEqual(null, pmc.getMatch());
-    try testing.expectEqual(null, pmc.getClosestCandidate());
+    try std.testing.expectEqual(null, pmc.getMatch());
+    try std.testing.expectEqual(null, pmc.getClosestCandidate());
     try std.testing.expectEqualStrings("", try testing.expectNonNull(pmc.getMatchedSubstring()));
 
     try std.testing.expect(pmc.append("ba"));
@@ -169,12 +169,12 @@ test progressiveSliceMatch {
     try std.testing.expectEqualStrings("baz", try testing.expectNonNull(pmc.getMatchedSubstring()));
     _ = try testing.expectNonNull(pmc.getClosestCandidate());
 
-    try testing.expectEqual("baz", pmc.getMatch());
+    try std.testing.expectEqual("baz", pmc.getMatch());
 
     try std.testing.expect(!pmc.append("z"));
-    try testing.expectEqual(null, pmc.getMatch());
-    try testing.expectEqual(null, pmc.getMatchedSubstring());
-    try testing.expectEqual(null, pmc.getClosestCandidate());
+    try std.testing.expectEqual(null, pmc.getMatch());
+    try std.testing.expectEqual(null, pmc.getMatchedSubstring());
+    try std.testing.expectEqual(null, pmc.getClosestCandidate());
 
     pmc.clear();
     try std.testing.expect(pmc.append("f"));
@@ -183,7 +183,7 @@ test progressiveSliceMatch {
 
     pmc.clear();
     try std.testing.expect(!pmc.append("a"));
-    try testing.expectEqual(null, pmc.getMatchedSubstring());
+    try std.testing.expectEqual(null, pmc.getMatchedSubstring());
     try std.testing.expect(!pmc.append("a"));
 
     pmc.clear();
@@ -277,21 +277,21 @@ fn testProgressiveStringToEnum(comptime E: type) !void {
 
         pse = .{};
         try std.testing.expectEqualStrings("", try testing.expectNonNull(pse.getMatchedSubslice()));
-        try testing.expectEqual(null, pse.getClosestCandidate());
-        try testing.expectEqual(null, pse.getMatch());
+        try std.testing.expectEqual(null, pse.getClosestCandidate());
+        try std.testing.expectEqual(null, pse.getMatch());
 
         try std.testing.expect(pse.append(field_name));
         try std.testing.expectEqualStrings(field_name, try testing.expectNonNull(pse.getMatchedSubslice()));
-        try testing.expectEqual(value, pse.getClosestCandidate());
-        try testing.expectEqual(value, pse.getMatch());
+        try std.testing.expectEqual(value, pse.getClosestCandidate());
+        try std.testing.expectEqual(value, pse.getMatch());
 
         try std.testing.expect(!pse.append(comptime non_matching: {
             const lexicographic_biggest = Pse.sorted.tags[Pse.sorted.tags.len - 1];
             break :non_matching @tagName(lexicographic_biggest) ++ "-no-match";
         }));
-        try testing.expectEqual(null, pse.getMatchedSubslice());
-        try testing.expectEqual(null, pse.getClosestCandidate());
-        try testing.expectEqual(null, pse.getMatch());
+        try std.testing.expectEqual(null, pse.getMatchedSubslice());
+        try std.testing.expectEqual(null, pse.getClosestCandidate());
+        try std.testing.expectEqual(null, pse.getMatch());
 
         for (1..field_name.len + 1) |max_seg_size| {
             pse = .{};
@@ -302,8 +302,8 @@ fn testProgressiveStringToEnum(comptime E: type) !void {
                 try std.testing.expect(pse.getClosestCandidate() != null);
             }
             try std.testing.expectEqualStrings(field_name, try testing.expectNonNull(pse.getMatchedSubslice()));
-            try testing.expectEqual(value, pse.getClosestCandidate());
-            try testing.expectEqual(value, pse.getMatch());
+            try std.testing.expectEqual(value, pse.getClosestCandidate());
+            try std.testing.expectEqual(value, pse.getMatch());
         }
     }
 }
@@ -317,8 +317,8 @@ test ProgressiveStringToEnum {
         buzz,
     };
     var pste = ProgressiveStringToEnum(E){};
-    try testing.expectEqual(null, pste.getMatch());
-    try testing.expectEqual(null, pste.getClosestCandidate());
+    try std.testing.expectEqual(null, pste.getMatch());
+    try std.testing.expectEqual(null, pste.getClosestCandidate());
     try std.testing.expectEqualStrings("", try testing.expectNonNull(pste.getMatchedSubslice()));
 
     try std.testing.expect(pste.append("ba"));
@@ -329,23 +329,18 @@ test ProgressiveStringToEnum {
     try std.testing.expectEqualStrings("baz", try testing.expectNonNull(pste.getMatchedSubslice()));
     _ = try testing.expectNonNull(pste.getClosestCandidate());
 
-    try testing.expectEqual(.baz, pste.getMatch());
+    try std.testing.expectEqual(.baz, pste.getMatch());
 
     try std.testing.expect(!pste.append("z"));
-    try testing.expectEqual(null, pste.getMatch());
-    try testing.expectEqual(null, pste.getMatchedSubslice());
-    try testing.expectEqual(null, pste.getClosestCandidate());
+    try std.testing.expectEqual(null, pste.getMatch());
+    try std.testing.expectEqual(null, pste.getMatchedSubslice());
+    try std.testing.expectEqual(null, pste.getClosestCandidate());
 
     try testProgressiveStringToEnum(enum { adlk, bnae, aaeg, cvxz, fadsfea, vafa, zvcxer, ep, afeap, lapqqokf });
     try testProgressiveStringToEnum(enum { a, ab, abcd, bcdefg, bcde, xy, xz, xyz, xyzzz });
 }
 
 const testing = struct {
-    inline fn expectEqual(expected: anytype, actual: anytype) !void {
-        const T = @TypeOf(expected, actual);
-        return std.testing.expectEqual(@as(T, expected), @as(T, actual));
-    }
-
     fn expectNonNull(optional: anytype) !@typeInfo(@TypeOf(optional)).Optional.child {
         if (optional) |value| return value;
         return error.TestExpectedNonNullValue;
