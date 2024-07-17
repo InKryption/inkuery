@@ -18,13 +18,14 @@ pub fn ProgressiveSliceMatch(comptime T: type) type {
         const Self = @This();
 
         pub fn init(candidates: []const []const T) error{ NotSorted, DuplicateEntry }!Self {
-            var pmc = Self{ .candidates = undefined };
+            var pmc = Self{ .candidates = &.{} };
             try pmc.resetWith(candidates);
             return pmc;
         }
 
         /// Clears the search query.
         pub fn clear(pmc: *Self) void {
+            std.debug.assert(pmc.candidates.len != 0);
             pmc.* = .{ .candidates = pmc.candidates };
         }
 
